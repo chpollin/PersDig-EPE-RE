@@ -41,6 +41,7 @@
       </div>
       <button id="compareBtn">Vergleichen</button>
       <button id="exportBtn">Exportieren</button>
+      <button id="teiExportBtn">TEI exportieren</button>
       <button id="renameBtn">Umbenennen</button>
       <button id="deleteBtn" class="danger">Zeuge löschen</button>
     </div>
@@ -58,6 +59,13 @@
     <button id="searchBtn">Suchen</button>
     <button id="clearSearchBtn">Hervorhebungen entfernen</button>
     <ul id="searchResults"></ul>
+  </section>
+
+  <section id="alignment-import-section">
+    <h2>Alignment importieren (CSV)</h2>
+    <input type="file" id="alignmentFileInput" accept=".csv" />
+    <button id="importAlignmentBtn">Importieren</button>
+    <p id="alignmentImportStatus"></p>
   </section>
 
   <section id="annotations-section">

@@ -4,11 +4,25 @@ Dieses Repository enthält einen einfachen Prototyp für die zweikomponentige Sc
 
 ## Inhalt
 
-* `server.py` – Ein einfacher Python‑HTTP‑Server (basierend auf `http.server`), der statische JSON‑Dateien aus dem Verzeichnis `data/` bereitstellt. Dies simuliert einen Teil der RE‑API.
-* `data/sample_witness.json` – Beispielhafte JSON‑Struktur für einen Zeugen mit wenigen Tokens und Alignment‑Informationen.
-* `index.html` – Eine minimalistische HTML‑Seite, die das Beispiel‑JSON lädt und im Browser darstellt. Dient als vereinfachter Prototyp der Reading Environment.
+* `server.py` – Ein erweiterter Python‑HTTP‑Server (basierend auf `http.server`) mit einer kleinen REST‑API. Er stellt nicht mehr nur statische Dateien bereit, sondern ermöglicht:
+  * Import neuer Zeugen (`POST /api/witnesses`),
+  * Abrufen von Zeugenlisten und einzelnen Zeugen (`GET /api/witnesses`, `GET /api/witnesses/<id>`),
+  * Vergleich von Zeugen und Abschnitten (`GET /api/alignments?base=<id>&witness=<id>[&base_section=<sid>&witness_section=<sid>]`),
+  * Anlegen, Bearbeiten und Löschen von Annotationen (`POST /api/annotations`, `PUT /api/annotations/<id>`, `DELETE /api/annotations/<id>`),
+  * Umbenennen (Patch) und Löschen von Zeugen (`PATCH /api/witnesses/<id>`, `DELETE /api/witnesses/<id>`),
+  * Export einzelner Zeugen als JSON (`GET /api/export/<id>`),
+  * Auslesen und Download des Server‑Logs (`GET /api/logs`, `GET /api/logs/export`).
+  Alle Endpunkte schreiben in eine Logdatei `logs/server.log`.
+
+* `index.html` – Eine interaktive HTML‑Seite, die die oben genannten API‑Funktionen nutzt. Sie erlaubt das Hochladen von Zeugen, den Vergleich von zwei Zeugen einschließlich Section‑Auswahl, das Hinzufügen und Bearbeiten von Annotationen (inkl. Hervorhebung im Alignment), einfache Volltextsuche mit Markierung der Treffer, das Exportieren von Zeugen und das Umbenennen oder Löschen eines Zeugen. Logs können angezeigt und heruntergeladen werden.
+
+* `style.css` und `script.js` – Enthalten das Styling und die JavaScript‑Logik für die Frontend‑Interaktionen.
+
+* `data/` – JSON‑Dateien, in denen importierte Zeugen (`witnesses.json`) und Annotationen (`annotations.json`) gespeichert werden. `sample_witness.json` ist ein Beispielzeu­gen zum Experimentieren.
+
 * `epe/parser.py` – Eine Stub‑Datei für einen zukünftigen ALTO/PAGE‑Parser. Sie enthält Platzhalterfunktionen, die demonstrieren, wie ALTO‑Dateien eingelesen und in das interne JSON umgewandelt werden könnten.
-* `docs/` – Enthält die Dokumente aus Phase 1 (Architektur‑Dossier, Datenbankschema, Sicherheitskonzept, ADR‑Protokoll und Engineering Diary). Diese dienen als Referenz und Grundlage für die weitere Implementierung.
+
+* `docs/` – Enthält die Dokumente aus den ersten Projektphasen (Architektur‑Dossier, Datenbankschema, Sicherheitskonzept, ADR‑Protokoll und Engineering Diary) sowie weitere Meilensteinberichte.
 
 ## Benutzung
 
@@ -31,4 +45,4 @@ Dieses Repository enthält einen einfachen Prototyp für die zweikomponentige Sc
 
 ## Hinweise
 
-Dieser Prototyp dient lediglich der Illustration der Architektur und der Datenflüsse. Er erfüllt weder die Performance‑Vorgaben noch die Sicherheitsanforderungen der finalen Plattform. Viele Funktionen (Tokenisierung, Alignment, Annotationen, i18n/A11Y, UI‑Interaktion) sind hier nicht umgesetzt und müssen in späteren Phasen entwickelt werden.
+Obwohl dieser Prototyp bereits zahlreiche Kernfunktionen (Import, Export, Vergleich, Annotationen, Abschnitte, Suchen, Umbenennen/Löschen, Logging) demonstriert, ist er nicht für den produktiven Einsatz ausgelegt. Die Umsetzung basiert auf dem Python‑Modul `http.server` und speichert Daten in JSON‑Dateien – dies entspricht nicht den Performance‑ und Sicherheitsanforderungen der finalen Plattform. Funktionen wie fortgeschrittene Tokenisierung, fuzzy Alignment, komplexe Annotationsmodelle, i18n/A11Y oder eine echte Datenbank müssen in späteren Phasen noch implementiert oder optimiert werden.

@@ -2,50 +2,17 @@
   {
     "id": "w1",
     "siglum": "MS_001",
-    "label": "res",
-    "metadata": {
-      "language": "ar",
-      "date": "1300"
-    },
+    "label": "MS_001 – folio 42r",
+    "metadata": {"language": "ar", "date": "1300"},
     "sections": [
       {
         "id": "sec1",
         "order_no": 1,
         "type": "page",
         "tokens": [
-          {
-            "id": "w1t1",
-            "text": "بسم",
-            "position": 1,
-            "bbox": {
-              "x": 100,
-              "y": 200,
-              "width": 50,
-              "height": 20
-            }
-          },
-          {
-            "id": "w1t2",
-            "text": "الله",
-            "position": 2,
-            "bbox": {
-              "x": 160,
-              "y": 200,
-              "width": 60,
-              "height": 20
-            }
-          },
-          {
-            "id": "w1t3",
-            "text": "الرحمن",
-            "position": 3,
-            "bbox": {
-              "x": 230,
-              "y": 200,
-              "width": 70,
-              "height": 20
-            }
-          }
+          {"id": "w1t1", "text": "بسم", "position": 1, "bbox": {"x": 100, "y": 200, "width": 50, "height": 20}},
+          {"id": "w1t2", "text": "الله", "position": 2, "bbox": {"x": 160, "y": 200, "width": 60, "height": 20}},
+          {"id": "w1t3", "text": "الرحمن", "position": 3, "bbox": {"x": 230, "y": 200, "width": 70, "height": 20}}
         ]
       }
     ]
@@ -54,100 +21,16 @@
     "id": "w2",
     "siglum": "MS_002",
     "label": "MS_002 – folio 43r",
-    "metadata": {
-      "language": "ar",
-      "date": "1350"
-    },
+    "metadata": {"language": "ar", "date": "1350"},
     "sections": [
       {
         "id": "sec2",
         "order_no": 1,
         "type": "page",
         "tokens": [
-          {
-            "id": "w2t1",
-            "text": "بسم",
-            "position": 1,
-            "bbox": {
-              "x": 100,
-              "y": 210,
-              "width": 50,
-              "height": 20
-            }
-          },
-          {
-            "id": "w2t2",
-            "text": "اللہ",
-            "position": 2,
-            "bbox": {
-              "x": 160,
-              "y": 210,
-              "width": 55,
-              "height": 20
-            }
-          },
-          {
-            "id": "w2t3",
-            "text": "الرحیم",
-            "position": 3,
-            "bbox": {
-              "x": 220,
-              "y": 210,
-              "width": 70,
-              "height": 20
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "w3",
-    "siglum": "MS_003",
-    "label": "MS_003 – folio 44r",
-    "metadata": {
-      "language": "ar",
-      "date": "1400"
-    },
-    "sections": [
-      {
-        "id": "sec3",
-        "order_no": 1,
-        "type": "page",
-        "tokens": [
-          {
-            "id": "w3t1",
-            "text": "مثال",
-            "position": 1,
-            "bbox": {
-              "x": 100,
-              "y": 200,
-              "width": 60,
-              "height": 20
-            }
-          },
-          {
-            "id": "w3t2",
-            "text": "نص",
-            "position": 2,
-            "bbox": {
-              "x": 170,
-              "y": 200,
-              "width": 40,
-              "height": 20
-            }
-          },
-          {
-            "id": "w3t3",
-            "text": "آخر",
-            "position": 3,
-            "bbox": {
-              "x": 220,
-              "y": 200,
-              "width": 50,
-              "height": 20
-            }
-          }
+          {"id": "w2t1", "text": "بسم", "position": 1, "bbox": {"x": 100, "y": 210, "width": 50, "height": 20}},
+          {"id": "w2t2", "text": "اللہ", "position": 2, "bbox": {"x": 160, "y": 210, "width": 55, "height": 20}},
+          {"id": "w2t3", "text": "الرحیم", "position": 3, "bbox": {"x": 220, "y": 210, "width": 70, "height": 20}}
         ]
       }
     ]

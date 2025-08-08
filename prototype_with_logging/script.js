@@ -326,6 +326,52 @@ async function renameWitness() {
     alert('Bitte wählen Sie einen Zeugen aus.');
     return;
   }
+}
+
+/**
+ * Sendet ein CSV zur Ausrichtung an den Server. Erwartet, dass die Datei einen
+ * Header mit Witness-IDs besitzt und jede Zeile ein Alignment-Group darstellt.
+ */
+async function importAlignmentCsv() {
+  const fileInput = document.getElementById('alignmentFileInput');
+  const status = document.getElementById('alignmentImportStatus');
+  const file = fileInput.files[0];
+  if (!file) {
+    alert('Bitte wählen Sie eine CSV-Datei aus.');
+    return;
+  }
+  try {
+    const text = await file.text();
+    const resp = await fetch('/api/alignments/import', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/csv' },
+      body: text
+    });
+    if (resp.status === 201) {
+      status.textContent = 'Alignment importiert.';
+      // Nach Import neu vergleichen, um importierte Gruppen zu verwenden
+      if (document.getElementById('baseSelect').value && document.getElementById('witnessSelect').value) {
+        await compareWitnesses();
+      }
+    } else {
+      const txt = await resp.text();
+      status.textContent = 'Fehler beim Import: ' + txt;
+    }
+  } catch (err) {
+    status.textContent = 'Fehler: ' + err;
+  }
+}
+
+/**
+ * Exportiert den aktuell ausgewählten Zeugen als TEI-Datei.
+ */
+function exportTei() {
+  const witnessId = document.getElementById('witnessSelect').value;
+  if (!witnessId) {
+    alert('Bitte wählen Sie einen Zeugen aus.');
+    return;
+  }
+  window.location.href = `/api/tei/${encodeURIComponent(witnessId)}`;
   // Aktuelles Label ermitteln
   const witnessSelect = document.getElementById('witnessSelect');
   const currentLabel = witnessSelect.options[witnessSelect.selectedIndex].text;
@@ -372,6 +418,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('downloadLogsBtn').addEventListener('click', () => {
     window.location.href = '/api/logs/export';
   });
+  document.getElementById('importAlignmentBtn').addEventListener('click', importAlignmentCsv);
+  document.getElementById('teiExportBtn').addEventListener('click', exportTei);
 });
 
 /**

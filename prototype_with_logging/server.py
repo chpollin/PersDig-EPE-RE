@@ -27,6 +27,10 @@ annotations = []
 # Laufende ID für Annotationen
 next_annotation_id = 1
 
+# Alignment-Gruppen, die via CSV importiert wurden.
+# Jede Gruppe ist ein Dict von witness_id -> token_id.
+alignment_groups = []
+
 
 def find_witness_by_id(witness_id: str):
     """Hilfsfunktion, um einen Zeugen anhand seiner ID zu finden."""
@@ -61,6 +65,17 @@ def load_annotations():
                 next_annotation_id = max(next_annotation_id, int(ann['id']) + 1)
             except Exception:
                 pass
+
+def load_alignment_groups():
+    """Lädt Alignment-Gruppen aus JSON-Datei, falls vorhanden."""
+    global alignment_groups
+    align_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'alignments.json')
+    if os.path.exists(align_path):
+        try:
+            with open(align_path, 'r', encoding='utf-8') as f:
+                alignment_groups = json.load(f)
+        except Exception:
+            alignment_groups = []
 
 
 def save_annotations():
@@ -117,6 +132,8 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_api_post_witness()
         elif parsed_path == '/api/annotations':
             self.handle_api_post_annotation()
+        elif parsed_path == '/api/alignments/import':
+            self.handle_api_import_alignment()
         else:
             self.send_error(404, 'Not Found')
 
@@ -312,18 +329,42 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
                 write_log(self.command, self.path, 404, 'Section not found')
                 return
             alignments = []
-            # Einfaches Alignment: Positionen matchen
-            base_tokens = base_sec.get('tokens', [])
-            other_tokens = other_sec.get('tokens', [])
-            max_len = max(len(base_tokens), len(other_tokens))
-            for idx in range(max_len):
-                base_tok = base_tokens[idx] if idx < len(base_tokens) else None
-                other_tok = other_tokens[idx] if idx < len(other_tokens) else None
-                alignments.append({
-                    'position': idx + 1,
-                    'base': base_tok or {'id': None, 'text': '[—]'},
-                    'witness': other_tok or {'id': None, 'text': '[—]'}
-                })
+            if alignment_groups:
+                # Alignment anhand der importierten Gruppen
+                group_pos = 1
+                for group in alignment_groups:
+                    # Finde Token für Base und Witness
+                    base_tok_id = group.get(base_id)
+                    wit_tok_id = group.get(witness_id)
+                    def find_token_by_id(wit, tid):
+                        if not tid:
+                            return None
+                        for sec in wit.get('sections', []):
+                            for tok in sec.get('tokens', []):
+                                if tok.get('id') == tid:
+                                    return tok
+                        return None
+                    base_tok = find_token_by_id(base, base_tok_id)
+                    other_tok = find_token_by_id(other, wit_tok_id)
+                    alignments.append({
+                        'position': group_pos,
+                        'base': base_tok or {'id': None, 'text': '[—]'},
+                        'witness': other_tok or {'id': None, 'text': '[—]'}
+                    })
+                    group_pos += 1
+            else:
+                # Einfaches Alignment: Positionen matchen
+                base_tokens = base_sec.get('tokens', [])
+                other_tokens = other_sec.get('tokens', [])
+                max_len = max(len(base_tokens), len(other_tokens))
+                for idx in range(max_len):
+                    base_tok = base_tokens[idx] if idx < len(base_tokens) else None
+                    other_tok = other_tokens[idx] if idx < len(other_tokens) else None
+                    alignments.append({
+                        'position': idx + 1,
+                        'base': base_tok or {'id': None, 'text': '[—]'},
+                        'witness': other_tok or {'id': None, 'text': '[—]'}
+                    })
             resp = {'alignments': alignments}
             self.send_response(200)
             self.send_header('Content-Type', 'application/json; charset=utf-8')
@@ -395,6 +436,38 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(content)
             write_log(self.command, self.path, 200, 'Exported logs')
             return
+        if path.startswith('/api/tei/'):
+            # Exportiert einen einzelnen Zeugen als TEI-XML
+            witness_id = path.split('/')[-1]
+            w = find_witness_by_id(witness_id)
+            if not w:
+                self.send_error(404, 'Witness not found')
+                write_log(self.command, self.path, 404, 'Witness not found')
+                return
+            import xml.etree.ElementTree as ET
+            NS = {'tei': 'http://www.tei-c.org/ns/1.0'}
+            TEI = ET.Element('TEI', xmlns='http://www.tei-c.org/ns/1.0')
+            text = ET.SubElement(TEI, 'text')
+            body = ET.SubElement(text, 'body')
+            div = ET.SubElement(body, 'div', attrib={'type': 'witness', 'n': w.get('siglum', w['id'])})
+            p = ET.SubElement(div, 'p')
+            # Füge Tokens als <w> hinzu
+            for sec in w.get('sections', []):
+                for tok in sec.get('tokens', []):
+                    w_el = ET.SubElement(p, 'w', attrib={'xml:id': tok.get('id', '')})
+                    w_el.text = tok.get('text', '')
+                    # Leerzeichen zwischen Tokens
+                    w_el.tail = ' '
+            tei_str = ET.tostring(TEI, encoding='utf-8', xml_declaration=True).decode('utf-8')
+            tei_bytes = tei_str.encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/xml; charset=utf-8')
+            self.send_header('Content-Disposition', f'attachment; filename="witness_{witness_id}.tei.xml"')
+            self.send_header('Content-Length', str(len(tei_bytes)))
+            self.end_headers()
+            self.wfile.write(tei_bytes)
+            write_log(self.command, self.path, 200, f'Exported TEI {witness_id}')
+            return
         # unbekannter API Pfad
         self.send_error(404, 'API endpoint not found')
         write_log(self.command, self.path, 404, 'Endpoint not found')
@@ -424,6 +497,51 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
         self.send_response(201)
         self.end_headers()
         write_log(self.command, self.path, 201, f"Imported witness {data['id']}")
+
+    def handle_api_import_alignment(self):
+        """Importiert Alignment-Gruppen aus einer CSV-Datei."""
+        global alignment_groups
+        # Content-Type: multipart/form-data mit Datei? simple HTTPServer kann keine Boundaries leicht parsen
+        # Wir nutzen eine vereinfachte Variante: Der CSV-Content steht im Request-Body.
+        content_length = int(self.headers.get('Content-Length', 0))
+        if content_length == 0:
+            self.send_error(400, 'No CSV data provided')
+            write_log(self.command, self.path, 400, 'No CSV data')
+            return
+        body = self.rfile.read(content_length)
+        # Der Body enthält die rohe CSV (UTF-8)
+        try:
+            text = body.decode('utf-8')
+        except Exception:
+            self.send_error(400, 'Invalid encoding')
+            write_log(self.command, self.path, 400, 'Invalid encoding')
+            return
+        import csv
+        reader = csv.reader(text.splitlines())
+        rows = list(reader)
+        if not rows:
+            self.send_error(400, 'Empty CSV')
+            write_log(self.command, self.path, 400, 'Empty CSV')
+            return
+        headers = rows[0]
+        # Reset alignment groups
+        alignment_groups = []
+        for group_id, row in enumerate(rows[1:]):
+            group_map = {}
+            for idx, token_id in enumerate(row):
+                token_id = token_id.strip()
+                if token_id:
+                    witness_id = headers[idx].strip()
+                    group_map[witness_id] = token_id
+            alignment_groups.append(group_map)
+        # Persist optional: write to file
+        # Save alignments to file for persistence
+        align_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'alignments.json')
+        with open(align_path, 'w', encoding='utf-8') as f:
+            json.dump(alignment_groups, f, ensure_ascii=False, indent=2)
+        self.send_response(201)
+        self.end_headers()
+        write_log(self.command, self.path, 201, f'Imported {len(alignment_groups)} alignment groups')
 
     def handle_api_post_annotation(self):
         # JSON-Daten aus dem Request-Body lesen
@@ -465,6 +583,7 @@ def run_server():
     # Zeugen aus Datei laden
     load_witnesses()
     load_annotations()
+    load_alignment_groups()
     with socketserver.TCPServer(("", PORT), RequestHandler) as httpd:
         print(f"Server läuft unter http://localhost:{PORT}")
         print("Stoppen mit CTRL+C")
