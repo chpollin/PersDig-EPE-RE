@@ -15,44 +15,30 @@
                <span class="logo-subtitle">Edition Production Environment v0.1-alpha</span>
            </div>
            <nav class="main-nav">
-               <a href="#" class="nav-item active">Workspace</a>
-               <a href="#" class="nav-item">Import Hub</a>
-               <a href="#" class="nav-item">Models</a>
-               <a href="#" class="nav-item">Export</a>
-               <a href="#" class="nav-item">API</a>
-               <a href="#" class="nav-item">Settings</a>
+               <a href="#" class="nav-item active" id="nav-workspace">Workspace</a>
+               <a href="#" class="nav-item" id="nav-import">Import Hub</a>
+               <a href="#" class="nav-item" id="nav-models">Models</a>
+               <a href="#" class="nav-item" id="nav-export">Export</a>
+               <a href="#" class="nav-item" id="nav-api">API</a>
+               <a href="#" class="nav-item" id="nav-settings">Settings</a>
            </nav>
        </div>
        <div class="header-right">
            <div class="connection-indicator">
                <span class="indicator-dot online"></span>
-               <span>eScriptorium Connected</span>
+               <span id="connection-text">eScriptorium Connected</span>
            </div>
-           <select class="language-switcher">
-               <option>EN</option>
-               <option>FA</option>
-               <option>AR</option>
-               <option>TR</option>
-               <option>UR</option>
+           <select class="language-switcher" id="language-switch">
+               <option value="EN">EN</option>
+               <option value="FA">FA</option>
+               <option value="AR">AR</option>
+               <option value="TR">TR</option>
+               <option value="UR">UR</option>
            </select>
            <span class="user-info">user@institution.edu</span>
            <button class="btn-logout">Logout</button>
        </div>
    </header>
-
-   <!-- Import Modal (Hidden by default) -->
-   <div class="import-modal hidden">
-       <div class="modal-content">
-           <h3>Import from eScriptorium</h3>
-           <div class="import-options">
-               <label><input type="radio" name="import-type" checked> METS/ALTO XML</label>
-               <label><input type="radio" name="import-type"> JSON via REST API</label>
-               <label><input type="radio" name="import-type"> Direct Upload</label>
-           </div>
-           <input type="text" placeholder="eScriptorium API Endpoint" class="input-field">
-           <button class="btn-primary">Start Import</button>
-       </div>
-   </div>
 
    <!-- Main Container -->
    <div class="app-container">
@@ -60,45 +46,45 @@
        <!-- Left Sidebar - Witness Manager -->
        <aside class="sidebar">
            <div class="project-header">
-               <h3>Project Metadata</h3>
-               <span class="project-name">Persian Digital Humanities Collection</span>
+               <h3>PROJECT METADATA</h3>
+               <span class="project-name" id="project-name">Persian Digital Humanities Collection</span>
                <div class="project-stats">
-                   <span>Type: Multi-witness Edition</span>
-                   <span>Schema: SQE Compatible</span>
+                   <span id="project-type">Type: Multi-witness Edition</span>
+                   <span id="project-schema">Schema: SQE Compatible</span>
                </div>
            </div>
            
            <!-- Witness Navigator -->
            <div class="witness-panel">
                <div class="panel-header">
-                   <h4>Witness Manager</h4>
+                   <h4>Witnesses</h4>
                    <div class="witness-controls">
-                       <button class="btn-icon" title="Import from eScriptorium">⬇</button>
-                       <button class="btn-icon" title="Add Witness">+</button>
-                       <button class="btn-icon" title="Batch Operations">⋮</button>
+                       <button class="btn-icon" id="btn-import-witness" title="Import from eScriptorium">⬇</button>
+                       <button class="btn-icon" id="btn-add-witness" title="Add Witness">+</button>
+                       <button class="btn-icon" id="btn-batch-ops" title="Batch Operations">⋮</button>
                    </div>
                </div>
                
                <div class="witness-overview">
                    <div class="witness-counter">
                        <div class="counter-item">
-                           <span class="counter-number">60</span>
-                           <span class="counter-label">Total Witnesses</span>
+                           <span class="counter-number" id="total-witnesses">60</span>
+                           <span class="counter-label">TOTAL<br>WITNESSES</span>
                        </div>
                        <div class="counter-item">
-                           <span class="counter-number">245,892</span>
-                           <span class="counter-label">Aligned Tokens</span>
+                           <span class="counter-number" id="total-tokens">245,892</span>
+                           <span class="counter-label">ALIGNED<br>TOKENS</span>
                        </div>
                        <div class="counter-item">
-                           <span class="counter-number">12</span>
-                           <span class="counter-label">Active</span>
+                           <span class="counter-number" id="active-witnesses">12</span>
+                           <span class="counter-label">ACTIVE</span>
                        </div>
                    </div>
                </div>
 
                <div class="witness-filters">
-                   <input type="text" class="witness-search" placeholder="Search witnesses...">
-                   <select class="witness-filter">
+                   <input type="text" class="witness-search" id="witness-search" placeholder="Search witnesses...">
+                   <select class="witness-filter" id="witness-filter">
                        <option>All Witnesses</option>
                        <option>With Transcription</option>
                        <option>Aligned</option>
@@ -106,10 +92,10 @@
                    </select>
                </div>
                
-               <!-- Witness List with Performance Optimization -->
+               <!-- Witness List -->
                <div class="witness-list-container">
-                   <div class="witness-list virtual-scroll">
-                       <!-- Base Text -->
+                   <div class="witness-list" id="witness-list">
+                       <!-- Dynamic content will be loaded here -->
                        <div class="witness-group base-text">
                            <div class="witness-item selected base">
                                <input type="checkbox" checked>
@@ -127,7 +113,6 @@
                            </div>
                        </div>
 
-                       <!-- Primary Witnesses -->
                        <div class="witness-group expanded">
                            <div class="witness-group-header">
                                <span class="expand-icon">▼</span>
@@ -148,23 +133,9 @@
                                        </div>
                                    </div>
                                </div>
-                               <div class="witness-item">
-                                   <input type="checkbox" checked>
-                                   <span class="witness-status partial"></span>
-                                   <div class="witness-info">
-                                       <span class="witness-id">MS_003</span>
-                                       <span class="witness-label">Berlin SBB Or. 890</span>
-                                       <div class="witness-meta">
-                                           <span>1512 CE</span>
-                                           <span>89 folios</span>
-                                           <span>Fragment</span>
-                                       </div>
-                                   </div>
-                               </div>
                            </div>
                        </div>
 
-                       <!-- Secondary Witnesses (Virtualized) -->
                        <div class="witness-group collapsed">
                            <div class="witness-group-header">
                                <span class="expand-icon">▶</span>
@@ -175,473 +146,376 @@
                    </div>
                </div>
 
-               <!-- Witness Alignment Matrix -->
+               <!-- Bottom Actions -->
+               <div class="sidebar-actions">
+                   <button class="btn-secondary" id="btn-import-witnesses">Import Witnesses</button>
+                   <button class="btn-secondary" id="btn-batch-actions">Batch Actions</button>
+               </div>
+
+               <!-- Alignment Matrix -->
                <div class="alignment-matrix-preview">
-                   <h5>Alignment Coverage</h5>
-                   <div class="matrix-heatmap">
-                       <div class="heatmap-row">
-                           <span class="heatmap-cell full"></span>
-                           <span class="heatmap-cell full"></span>
-                           <span class="heatmap-cell partial"></span>
-                           <span class="heatmap-cell empty"></span>
-                       </div>
+                   <h5>ALIGNMENT COVERAGE</h5>
+                   <div class="matrix-heatmap" id="matrix-heatmap">
+                       <!-- Dynamic heatmap will be rendered here -->
                    </div>
-                   <button class="btn-secondary">Open Alignment Matrix</button>
+                   <button class="btn-secondary" id="btn-open-matrix">Open Alignment Matrix</button>
                </div>
            </div>
        </aside>
 
        <!-- Main Workspace -->
        <main class="workspace">
-           <!-- Enhanced Workspace Tabs -->
+           <!-- Workspace Tabs -->
            <div class="workspace-tabs">
-               <button class="tab-btn">Import</button>
-               <button class="tab-btn">Segmentation</button>
-               <button class="tab-btn active">Alignment</button>
-               <button class="tab-btn">Annotation</button>
-               <button class="tab-btn">Collation</button>
-               <button class="tab-btn">Preview TEI</button>
+               <button class="tab-btn" data-tab="import">Import</button>
+               <button class="tab-btn" data-tab="segmentation">Segmentation</button>
+               <button class="tab-btn active" data-tab="alignment">Alignment</button>
+               <button class="tab-btn" data-tab="annotation">Annotation</button>
+               <button class="tab-btn" data-tab="collation">Collation</button>
+               <button class="tab-btn" data-tab="preview">Preview TEI</button>
            </div>
 
            <!-- Context Bar -->
            <div class="context-bar">
-               <div class="breadcrumb">
+               <div class="breadcrumb" id="breadcrumb">
                    <span>Project</span>
                    <span>›</span>
-                   <span>Chapter 3</span>
+                   <span>All Witnesses</span>
                    <span>›</span>
-                   <span>Section 2</span>
-                   <span>›</span>
-                   <span>Line 42-45</span>
+                   <span>Alignment View</span>
                </div>
                <div class="workflow-status">
-                   <span class="status-step complete">Import ✓</span>
-                   <span class="status-step complete">Tokenize ✓</span>
-                   <span class="status-step active">Align</span>
-                   <span class="status-step">Annotate</span>
-                   <span class="status-step">Export</span>
+                   <span class="status-step complete" id="status-import">Import ✓</span>
+                   <span class="status-step complete" id="status-tokenize">Tokenize ✓</span>
+                   <span class="status-step active" id="status-align">Align</span>
+                   <span class="status-step" id="status-annotate">Annotate</span>
+                   <span class="status-step" id="status-export">Export</span>
                </div>
            </div>
 
-           <!-- Enhanced Toolbar -->
+           <!-- Toolbar -->
            <div class="toolbar">
                <div class="toolbar-group">
-                   <button class="tool-btn" title="Zoom In">🔍+</button>
-                   <button class="tool-btn" title="Zoom Out">🔍-</button>
-                   <span class="zoom-level">125%</span>
+                   <button class="tool-btn" id="btn-zoom-in" title="Zoom In">🔍+</button>
+                   <button class="tool-btn" id="btn-zoom-out" title="Zoom Out">🔍-</button>
+                   <span class="zoom-level" id="zoom-level">100%</span>
                </div>
                <div class="toolbar-group">
-                   <button class="tool-btn" title="Previous Variation">◀</button>
-                   <button class="tool-btn" title="Next Variation">▶</button>
-                   <span class="variation-counter">Var. 3/27</span>
+                   <button class="tool-btn" id="btn-prev-var" title="Previous Variation">◀</button>
+                   <button class="tool-btn" id="btn-next-var" title="Next Variation">▶</button>
+                   <span class="variation-counter">Var. 1/1</span>
                </div>
                <div class="toolbar-group">
-                   <select class="view-mode">
+                   <select class="view-mode" id="view-mode">
                        <option>Parallel View</option>
                        <option>Synopsis</option>
                        <option>Apparatus</option>
                        <option>Image-Text</option>
                    </select>
-                   <select class="granularity">
-                       <option>Token</option>
-                       <option>Line</option>
-                       <option>Section</option>
-                       <option>Page</option>
+                   <select class="granularity" id="granularity">
+                       <option value="token">Token</option>
+                       <option value="line">Line</option>
+                       <option value="section">Section</option>
+                       <option value="page">Page</option>
                    </select>
                </div>
                <div class="toolbar-group">
-                   <button class="tool-btn" title="Auto-align Selection">🔄</button>
-                   <button class="tool-btn" title="Apply Passim">📊</button>
-                   <button class="tool-btn" title="KITAB Analysis">📚</button>
-               </div>
-               <div class="toolbar-group rtl-controls">
-                   <button class="tool-btn" title="RTL/LTR Toggle">⇄</button>
-                   <select class="reading-order">
-                       <option>Reading Order 1</option>
-                       <option>Reading Order 2</option>
-                       <option>Scribal Order</option>
-                   </select>
+                   <button class="tool-btn" id="btn-retokenize" title="Retokenize">🔄</button>
+                   <button class="tool-btn" id="btn-save" title="Save Project">💾</button>
                </div>
            </div>
 
-           <!-- Multi-Witness Parallel View -->
+           <!-- Main Content Area -->
            <div class="parallel-view-container">
-               <!-- IIIF Image Viewer -->
+               <!-- Manuscript Image Panel -->
                <div class="panel iiif-viewer">
                    <div class="panel-header">
-                       <span>MS_001 - Folio 42r (IIIF)</span>
+                       <span id="image-title">MS_001 - Folio 42r (IIIF)</span>
                        <div class="panel-controls">
-                           <button class="btn-small">⟲</button>
-                           <button class="btn-small">⛶</button>
-                           <select class="image-layer">
-                               <option>Original</option>
-                               <option>UV Light</option>
-                               <option>Multispectral</option>
-                           </select>
+                           <button class="btn-small" id="btn-prev-page">Previous</button>
+                           <span id="page-counter">42 / 156</span>
+                           <button class="btn-small" id="btn-next-page">Next</button>
                        </div>
                    </div>
                    <div class="iiif-container">
-                       <div class="manuscript-viewer">
-                           <!-- Simulated manuscript with overlay -->
-                           <svg class="text-overlay" viewBox="0 0 800 1000">
-                               <!-- Baseline visualization -->
-                               <polyline class="baseline" points="50,100 750,100" />
-                               <polyline class="baseline" points="50,150 750,150" />
-                               <polyline class="baseline" points="50,200 750,200" />
-                               
-                               <!-- Token polygons -->
-                               <polygon class="token-polygon selected" points="50,90 120,90 120,110 50,110" />
-                               <polygon class="token-polygon" points="125,90 200,90 200,110 125,110" />
-                               
-                               <!-- Reading order indicators -->
-                               <text x="25" y="105" class="line-number">1</text>
-                               <text x="25" y="155" class="line-number">2</text>
-                           </svg>
-                           <img src="data:image/svg+xml;base64,..." alt="Manuscript page" />
+                       <div class="manuscript-viewer" id="manuscript-viewer">
+                           <div class="manuscript-page">
+                               <!-- Simulated manuscript page -->
+                               <div class="text-region">
+                                   <div class="text-line">━━━━━━━━━━━━━━━━━━━━━</div>
+                                   <div class="text-line">━━━━━━━━━━━━━━━━━━</div>
+                                   <div class="text-line">━━━━━━━━━━━━━━━━━━━━</div>
+                               </div>
+                           </div>
                        </div>
                    </div>
                </div>
 
-               <!-- Multi-Witness Alignment Grid -->
+               <!-- Alignment Table Panel -->
                <div class="panel alignment-grid">
                    <div class="panel-header">
                        <span>Multi-Witness Alignment</span>
                        <div class="panel-controls">
-                           <label><input type="checkbox" checked> Show variants</label>
-                           <label><input type="checkbox"> Normalize</label>
-                           <button class="btn-small">Export CollateX</button>
+                           <label><input type="checkbox" id="show-variants" checked> Show variants</label>
+                           <label><input type="checkbox" id="normalize"> Normalize</label>
+                           <button class="btn-small" id="btn-export-collatex">Export CollateX</button>
                        </div>
                    </div>
                    
-                   <!-- Witness Alignment Table -->
                    <div class="alignment-table-container">
-                       <table class="alignment-table">
+                       <table class="alignment-table" id="alignment-table">
                            <thead>
                                <tr>
-                                   <th class="witness-header">Witness</th>
-                                   <th class="token-header" data-token="1">Token 1</th>
-                                   <th class="token-header" data-token="2">Token 2</th>
-                                   <th class="token-header" data-token="3">Token 3</th>
-                                   <th class="token-header variant" data-token="4">Token 4 ⚠</th>
-                                   <th class="token-header" data-token="5">Token 5</th>
+                                   <th class="witness-header">WITNESS</th>
+                                   <th class="token-header">TOKEN 1</th>
+                                   <th class="token-header">TOKEN 2</th>
+                                   <th class="token-header">TOKEN 3</th>
+                                   <th class="token-header variant">TOKEN 4 ⚠</th>
+                                   <th class="token-header">TOKEN 5</th>
                                </tr>
                            </thead>
-                           <tbody>
-                               <!-- Base Text -->
-                               <tr class="witness-row base-text">
-                                   <td class="witness-cell">
-                                       <span class="witness-label">MS_001 [BASE]</span>
-                                   </td>
-                                   <td class="token-cell" dir="rtl">در</td>
-                                   <td class="token-cell" dir="rtl">این</td>
-                                   <td class="token-cell" dir="rtl">کتاب</td>
-                                   <td class="token-cell variant" dir="rtl">مبارک</td>
-                                   <td class="token-cell" dir="rtl">که</td>
-                               </tr>
-                               
-                               <!-- Witness 2 -->
-                               <tr class="witness-row">
-                                   <td class="witness-cell">MS_002</td>
-                                   <td class="token-cell" dir="rtl">در</td>
-                                   <td class="token-cell" dir="rtl">این</td>
-                                   <td class="token-cell" dir="rtl">کتاب</td>
-                                   <td class="token-cell variant" dir="rtl">شریف</td>
-                                   <td class="token-cell" dir="rtl">که</td>
-                               </tr>
-                               
-                               <!-- Witness 3 -->
-                               <tr class="witness-row">
-                                   <td class="witness-cell">MS_003</td>
-                                   <td class="token-cell" dir="rtl">در</td>
-                                   <td class="token-cell gap">[gap]</td>
-                                   <td class="token-cell" dir="rtl">کتاب</td>
-                                   <td class="token-cell variant" dir="rtl">مبارک</td>
-                                   <td class="token-cell" dir="rtl">که</td>
-                               </tr>
-                               
-                               <!-- Add more witnesses (scrollable) -->
+                           <tbody id="alignment-tbody">
+                               <!-- Dynamic content -->
                            </tbody>
                        </table>
                    </div>
 
-                   <!-- Variant Apparatus -->
-                   <div class="apparatus-view">
-                       <h5>Critical Apparatus</h5>
-                       <div class="apparatus-entry">
-                           <span class="lemma">مبارک</span>
-                           <span class="witnesses">MS_001, MS_003, MS_005-012</span>
-                           <span class="separator">]</span>
-                           <span class="variant">شریف</span>
-                           <span class="witnesses">MS_002, MS_004</span>
+                   <!-- Apparatus -->
+                   <div class="apparatus-view" id="apparatus-view">
+                       <h5>CRITICAL APPARATUS</h5>
+                       <div id="apparatus-content">
+                           <!-- Dynamic apparatus entries -->
                        </div>
                    </div>
                </div>
            </div>
 
-           <!-- Enhanced Token Detail Panel -->
-           <div class="token-detail-panel expanded">
-               <div class="detail-tabs">
-                   <button class="detail-tab active">Token Data</button>
-                   <button class="detail-tab">Annotations</button>
-                   <button class="detail-tab">Variants</button>
-                   <button class="detail-tab">Images</button>
+           <!-- Token Detail Panel -->
+           <div class="token-detail-panel" id="token-detail-panel">
+               <div class="detail-header">
+                   <h4>Token Details</h4>
+                   <span class="token-id" id="token-id">Token ID: —</span>
                </div>
-               
                <div class="detail-content">
-                   <!-- Token Data Tab -->
-                   <div class="detail-pane active">
-                       <div class="token-grid">
-                           <div class="detail-group">
-                               <label>Token ID:</label>
-                               <code>CH3_S2_L42_T4</code>
-                           </div>
-                           <div class="detail-group">
-                               <label>Coordinates:</label>
-                               <code>x:125 y:90 w:75 h:20</code>
-                           </div>
-                           <div class="detail-group">
-                               <label>Diplomatic:</label>
-                               <input type="text" value="مبارک" dir="rtl" class="detail-input">
-                           </div>
-                           <div class="detail-group">
-                               <label>Normalized:</label>
-                               <input type="text" value="مبارک" dir="rtl" class="detail-input">
-                           </div>
-                           <div class="detail-group">
-                               <label>Transliteration:</label>
-                               <input type="text" value="mubārak" class="detail-input">
-                           </div>
-                           <div class="detail-group">
-                               <label>Regex Pattern:</label>
-                               <input type="text" value="[\u0645][\u0628][\u0627][\u0631][\u06A9]" class="detail-input monospace">
-                           </div>
-                       </div>
-                       
-                       <!-- Multi-layer transcription -->
-                       <div class="transcription-layers">
-                           <h5>Transcription Layers</h5>
-                           <div class="layer-item">
-                               <label>Main Text:</label>
-                               <span dir="rtl">مبارک</span>
-                           </div>
-                           <div class="layer-item">
-                               <label>Marginal Note:</label>
-                               <span dir="rtl">صح</span>
-                           </div>
-                           <div class="layer-item">
-                               <label>Interlinear:</label>
-                               <span>—</span>
-                           </div>
+                   <div class="detail-group">
+                       <label>Diplomatic:</label>
+                       <input type="text" id="token-diplomatic" class="detail-input" dir="auto">
+                   </div>
+                   <div class="detail-group">
+                       <label>Normalized:</label>
+                       <input type="text" id="token-normalized" class="detail-input" dir="auto">
+                   </div>
+                   <div class="detail-group">
+                       <label>Variants:</label>
+                       <div class="variant-list" id="variant-list">
+                           <!-- Dynamic variants -->
                        </div>
                    </div>
-
-                   <!-- Annotations Tab -->
-                   <div class="detail-pane">
-                       <div class="annotation-editor">
-                           <div class="annotation-types">
-                               <button class="anno-type-btn active">Linguistic</button>
-                               <button class="anno-type-btn">Structural</button>
-                               <button class="anno-type-btn">Intertextual</button>
-                               <button class="anno-type-btn">Paleographic</button>
-                           </div>
-                           <div class="annotation-list">
-                               <div class="annotation-item">
-                                   <span class="anno-type">POS</span>
-                                   <span class="anno-value">ADJ</span>
-                               </div>
-                               <div class="annotation-item">
-                                   <span class="anno-type">Lemma</span>
-                                   <span class="anno-value">برک</span>
-                               </div>
-                               <div class="annotation-item">
-                                   <span class="anno-type">Script</span>
-                                   <span class="anno-value">Nasta'liq</span>
-                               </div>
-                           </div>
-                           <button class="btn-add-annotation">+ Add Annotation</button>
+                   <div class="detail-group">
+                       <label>Annotations:</label>
+                       <div class="annotation-tags" id="annotation-tags">
+                           <!-- Dynamic annotations -->
                        </div>
+                       <button class="btn-add-tag" id="btn-add-annotation">+</button>
                    </div>
                </div>
            </div>
        </main>
 
-       <!-- Right Panel - Context Tools -->
+       <!-- Right Panel -->
        <aside class="right-panel">
-           <!-- Alignment Tools -->
+           <!-- Context Tools -->
            <div class="panel-section">
-               <h4>Alignment Tools</h4>
-               <div class="alignment-tools">
-                   <button class="tool-btn-large">
-                       <span class="icon">🔗</span>
-                       <span>Link Tokens</span>
-                   </button>
-                   <button class="tool-btn-large">
-                       <span class="icon">✂</span>
-                       <span>Split Token</span>
-                   </button>
-                   <button class="tool-btn-large">
-                       <span class="icon">🔄</span>
-                       <span>Auto-Align Section</span>
-                   </button>
-                   <button class="tool-btn-large">
-                       <span class="icon">📊</span>
-                       <span>Run Passim</span>
-                   </button>
+               <h4>CONTEXT TOOLS</h4>
+               <div class="tool-palette">
+                   <button class="palette-btn" id="btn-auto-align">Auto-align Selected</button>
+                   <button class="palette-btn" id="btn-merge-tokens">Merge Tokens</button>
+                   <button class="palette-btn" id="btn-split-token">Split Token</button>
+                   <button class="palette-btn" id="btn-validate">Validate Page</button>
                </div>
            </div>
 
-           <!-- Witness Comparison -->
+           <!-- Quick Actions -->
            <div class="panel-section">
-               <h4>Quick Compare</h4>
-               <div class="witness-compare">
-                   <select class="compare-select">
-                       <option>MS_001 vs MS_002</option>
-                       <option>MS_001 vs All</option>
-                   </select>
-                   <div class="comparison-stats">
-                       <div class="stat-item">
-                           <span class="stat-label">Agreement:</span>
-                           <span class="stat-value">87.3%</span>
-                       </div>
-                       <div class="stat-item">
-                           <span class="stat-label">Variants:</span>
-                           <span class="stat-value">1,247</span>
-                       </div>
-                       <div class="stat-item">
-                           <span class="stat-label">Gaps:</span>
-                           <span class="stat-value">23</span>
-                       </div>
-                   </div>
-               </div>
-           </div>
-
-           <!-- Model Selector -->
-           <div class="panel-section">
-               <h4>OCR/HTR Models</h4>
-               <div class="model-selector">
-                   <select class="model-dropdown">
-                       <option>Kraken Persian Print v2.1</option>
-                       <option>eScriptorium Nasta'liq</option>
-                       <option>Custom Fine-tuned Model</option>
-                   </select>
-                   <button class="btn-apply-model">Apply to Selection</button>
-                   <div class="model-confidence">
-                       <span>Confidence: 94.2%</span>
-                       <div class="confidence-bar">
-                           <div class="confidence-fill" style="width: 94.2%"></div>
-                       </div>
-                   </div>
-               </div>
-           </div>
-
-           <!-- Export Options -->
-           <div class="panel-section">
-               <h4>Quick Export</h4>
+               <h4>QUICK EXPORT</h4>
                <div class="export-options">
-                   <button class="export-btn">
-                       <span class="format">TEI</span>
-                       <span class="description">Stand-off</span>
+                   <button class="export-btn" data-format="txt">
+                       <span class="format">TXT</span>
+                       <span class="description">Plain Text</span>
                    </button>
-                   <button class="export-btn">
+                   <button class="export-btn" data-format="json">
                        <span class="format">JSON</span>
                        <span class="description">CollateX</span>
                    </button>
-                   <button class="export-btn">
+                   <button class="export-btn" data-format="html">
+                       <span class="format">HTML</span>
+                       <span class="description">Report</span>
+                   </button>
+                   <button class="export-btn" data-format="csv">
+                       <span class="format">CSV</span>
+                       <span class="description">Table</span>
+                   </button>
+                   <button class="export-btn" data-format="tei-basic">
+                       <span class="format">TEI</span>
+                       <span class="description">Basic XML</span>
+                   </button>
+                   <button class="export-btn" data-format="alto">
                        <span class="format">ALTO</span>
                        <span class="description">With Images</span>
                    </button>
                </div>
            </div>
 
-           <!-- Activity Monitor -->
+           <!-- Processing Queue -->
            <div class="panel-section">
-               <h4>Processing Queue</h4>
+               <h4>PROCESSING QUEUE</h4>
                <div class="activity-monitor">
-                   <div class="process-item running">
-                       <span class="process-icon">⚙</span>
+                   <div class="process-item" id="process-status">
+                       <span class="process-icon">✓</span>
                        <div class="process-info">
-                           <span class="process-name">Alignment Batch 3</span>
-                           <span class="process-status">Processing...</span>
-                       </div>
-                       <span class="process-progress">72%</span>
-                   </div>
-                   <div class="process-item queued">
-                       <span class="process-icon">⏸</span>
-                       <div class="process-info">
-                           <span class="process-name">KITAB Analysis</span>
-                           <span class="process-status">Queued</span>
+                           <span class="process-name">Ready</span>
+                           <span class="process-status">No active processes</span>
                        </div>
                    </div>
+               </div>
+           </div>
+
+           <!-- Annotation Sets -->
+           <div class="panel-section">
+               <h4>ANNOTATION SETS</h4>
+               <div class="annotation-sets">
+                   <label><input type="checkbox" id="anno-linguistic" checked> Linguistic</label>
+                   <label><input type="checkbox" id="anno-structural" checked> Structural</label>
+                   <label><input type="checkbox" id="anno-intertextual"> Intertextual</label>
+                   <label><input type="checkbox" id="anno-scribal"> Scribal Hands</label>
+                   <label><input type="checkbox" id="anno-entities"> Named Entities</label>
                </div>
            </div>
        </aside>
    </div>
 
-   <!-- Enhanced Bottom Bar -->
+   <!-- Bottom Bar -->
    <footer class="bottom-bar">
        <div class="progress-section">
-           <div class="overall-progress">
-               <span>Project Progress:</span>
-               <div class="multi-progress">
-                   <div class="progress-segment import" style="width: 20%" title="Import: 100%"></div>
-                   <div class="progress-segment tokenize" style="width: 20%" title="Tokenize: 100%"></div>
-                   <div class="progress-segment align" style="width: 13%" title="Align: 65%"></div>
-                   <div class="progress-segment annotate" style="width: 8%" title="Annotate: 40%"></div>
-                   <div class="progress-segment export" style="width: 0%" title="Export: 0%"></div>
-               </div>
+           <span>Alignment Progress:</span>
+           <div class="progress-bar">
+               <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
            </div>
-       </div>
-       
-       <div class="performance-metrics">
-           <span class="metric">RAM: 2.3GB</span>
-           <span class="metric">Tokens/sec: 1,247</span>
-           <span class="metric">Queue: 3</span>
+           <span id="progress-percent">0%</span>
        </div>
        
        <div class="console-toggle">
-           <button class="btn-console">Console ▲</button>
+           <button class="btn-console" id="btn-console">Console ▲</button>
        </div>
        
        <div class="status-section">
-           <span class="status-message">✓ Auto-saved 30s ago</span>
-           <span class="connection-status">● eScriptorium</span>
-           <span class="connection-status">● IIIF Server</span>
-           <span class="connection-status">○ KITAB API</span>
+           <span class="status-message" id="status-message">✓ Ready</span>
+           <span class="connection-status" id="connection-status">● Connected</span>
        </div>
    </footer>
 
-   <!-- Enhanced Console Panel -->
-   <div class="console-panel hidden">
+   <!-- Console Panel -->
+   <div class="console-panel hidden" id="console-panel">
        <div class="console-header">
-           <div class="console-tabs">
-               <button class="console-tab active">Activity</button>
-               <button class="console-tab">Errors</button>
-               <button class="console-tab">API</button>
-               <button class="console-tab">Performance</button>
-           </div>
-           <button class="btn-close-console">×</button>
+           <span>Activity Log</span>
+           <button class="btn-close-console" id="btn-close-console">×</button>
        </div>
-       <div class="console-content">
-           <div class="log-entry info">[14:23:15] eScriptorium: Imported 12 witnesses via REST API</div>
-           <div class="log-entry success">[14:23:45] Tokenization: 186 tokens extracted using regex: /[\p{Arabic}]+/gu</div>
-           <div class="log-entry warning">[14:24:02] Alignment: Conflict detected in MS_003 line 42 - manual review required</div>
-           <div class="log-entry info">[14:24:30] METS/ALTO: Preserving text-image coordinates for 156 regions</div>
-           <div class="log-entry api">[14:24:45] API: GET /api/witnesses/MS_001/tokens?page=42 (124ms)</div>
-           <div class="log-entry performance">[14:25:00] Memory: Peak usage 2.3GB for 60 witness alignment</div>
+       <div class="console-content" id="console-content">
+           <div class="log-entry info">EPE initialized. Ready to load project.</div>
        </div>
    </div>
 
-   <!-- Floating Action Button for Quick Actions -->
+   <!-- Floating Action Button -->
    <div class="fab-container">
-       <button class="fab main-fab">+</button>
-       <div class="fab-menu hidden">
-           <button class="fab mini-fab" title="Import Witness">⬇</button>
-           <button class="fab mini-fab" title="Run Alignment">🔄</button>
-           <button class="fab mini-fab" title="Export TEI">📄</button>
-           <button class="fab mini-fab" title="Help">?</button>
+       <button class="fab main-fab" id="fab-main">+</button>
+       <div class="fab-menu hidden" id="fab-menu">
+           <button class="fab mini-fab" id="fab-import" title="Load Sample">📁</button>
+           <button class="fab mini-fab" id="fab-tokenize" title="Tokenize">🔤</button>
+           <button class="fab mini-fab" id="fab-save" title="Save">💾</button>
+           <button class="fab mini-fab" id="fab-help" title="Help">?</button>
        </div>
    </div>
 
+   <!-- Load JavaScript -->
    <script src="data.js"></script>
+   
+   <!-- Initialize after DOM load -->
+   <script>
+       // Quick initialization for immediate functionality
+       document.addEventListener('DOMContentLoaded', function() {
+           // Connect Import Hub button
+           document.getElementById('nav-import').addEventListener('click', function(e) {
+               e.preventDefault();
+               if (typeof showSampleProjectMenu === 'function') {
+                   showSampleProjectMenu();
+               }
+           });
+           
+           // Connect Export button
+           document.getElementById('nav-export').addEventListener('click', function(e) {
+               e.preventDefault();
+               if (EPE && EPE.ui && EPE.ui.showExportDialog) {
+                   EPE.ui.showExportDialog();
+               }
+           });
+           
+           // Connect Settings button
+           document.getElementById('nav-settings').addEventListener('click', function(e) {
+               e.preventDefault();
+               if (confirm('Export localStorage backup?')) {
+                   if (EPE && EPE.storage && EPE.storage.exportLocalStorage) {
+                       EPE.storage.exportLocalStorage();
+                   }
+               }
+           });
+           
+           // Connect Console button
+           document.getElementById('btn-console').addEventListener('click', function() {
+               document.getElementById('console-panel').classList.toggle('hidden');
+           });
+           
+           // Connect Console close button
+           document.getElementById('btn-close-console').addEventListener('click', function() {
+               document.getElementById('console-panel').classList.add('hidden');
+           });
+           
+           // Connect FAB
+           document.getElementById('fab-main').addEventListener('click', function() {
+               document.getElementById('fab-menu').classList.toggle('hidden');
+           });
+           
+           // Connect FAB buttons
+           document.getElementById('fab-import').addEventListener('click', function() {
+               if (typeof showSampleProjectMenu === 'function') {
+                   showSampleProjectMenu();
+                   document.getElementById('fab-menu').classList.add('hidden');
+               }
+           });
+           
+           document.getElementById('fab-save').addEventListener('click', function() {
+               if (EPE && EPE.storage && EPE.storage.saveProject) {
+                   EPE.storage.saveProject();
+                   document.getElementById('fab-menu').classList.add('hidden');
+               }
+           });
+           
+           // Connect Export buttons
+           document.querySelectorAll('.export-btn').forEach(btn => {
+               btn.addEventListener('click', function(e) {
+                   const format = this.dataset.format;
+                   if (EPE && EPE.exporters) {
+                       EPE.exporters.exportProject(format, {
+                           includeText: true,
+                           includeTokens: true,
+                           includeApparatus: true
+                       });
+                   }
+               });
+           });
+           
+           // Log ready state
+           console.log('EPE Interface Ready - Use Import Hub to load sample project');
+       });
+   </script>
 </body>
 </html>
