@@ -13,3 +13,52 @@
 2025-08-08T21:29:03 GET /api/alignments?base=w2&witness=w3 200 
 2025-08-08T21:29:06 GET /api/alignments?base=w1&witness=w3 200 
 2025-08-08T21:29:07 GET /api/alignments?base=w2&witness=w3 200 
+2025-08-08T21:35:00 GET /api/witnesses 200 
+2025-08-08T21:35:10 POST /api/witnesses 201 Imported witness w3
+2025-08-08T21:35:10 GET /api/witnesses 200 
+2025-08-08T21:35:18 GET /api/annotations?witness_id=w1 200 
+2025-08-08T21:35:20 GET /api/logs 200 
+2025-08-08T21:35:24 GET /api/alignments?base=w1&witness=w1 200 
+2025-08-08T21:35:27 GET /api/alignments?base=w2&witness=w1 200 
+2025-08-08T21:35:28 GET /api/alignments?base=w2&witness=w3 200 
+2025-08-08T21:35:31 GET /api/annotations?witness_id=w3 200 
+2025-08-08T21:36:14 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:36:16 GET /api/annotations?witness_id=w3 200 
+2025-08-08T21:36:20 POST /api/witnesses 400 Witness ID exists
+2025-08-08T21:36:24 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:37:08 POST /api/witnesses 400 Witness ID exists
+2025-08-08T21:37:10 GET /api/witnesses 200 
+2025-08-08T21:37:13 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:37:14 GET /api/witnesses 200 
+2025-08-08T21:37:17 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:37:19 GET /api/witnesses 200 
+2025-08-08T21:37:21 POST /api/witnesses 400 Witness ID exists
+2025-08-08T21:37:24 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:37:26 GET /api/witnesses 200 
+2025-08-08T21:37:28 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:37:30 GET /api/annotations?witness_id=w1 200 
+2025-08-08T21:37:32 GET /api/alignments?base=w2&witness=w1 200 
+2025-08-08T21:42:02 GET /api/witnesses 200 
+2025-08-08T21:42:08 POST /api/witnesses 201 Imported witness w3
+2025-08-08T21:42:08 GET /api/witnesses 200 
+2025-08-08T21:42:11 GET /api/alignments?base=w1&witness=w2 200 
+2025-08-08T21:42:14 DELETE /api/witnesses/w2 204 Deleted witness w2
+2025-08-08T21:42:15 GET /api/witnesses 200 
+2025-08-08T21:42:19 GET /api/alignments?base=w3&witness=w1 200 
+2025-08-08T21:42:22 GET /api/annotations?witness_id=w1 200 
+2025-08-08T21:42:23 GET /api/logs 200 
+2025-08-08T21:42:33 GET /api/witnesses 200 
+2025-08-08T21:42:34 GET /api/witnesses/w1 200 
+2025-08-08T21:42:34 GET /api/witnesses/w3 200 
+2025-08-08T21:42:36 GET /api/witnesses 200 
+2025-08-08T21:42:36 GET /api/witnesses/w1 200 
+2025-08-08T21:42:37 GET /api/witnesses/w3 200 
+2025-08-08T21:46:54 GET /api/witnesses 200 
+2025-08-08T21:46:58 POST /api/witnesses 201 Imported witness w3
+2025-08-08T21:46:58 GET /api/witnesses 200 
+2025-08-08T21:46:59 GET /api/annotations?witness_id=w1 200 
+2025-08-08T21:47:03 GET /api/alignments?base=w1&witness=w2 200 
+2025-08-08T21:47:04 GET /api/export/w2 200 Exported witness w2
+2025-08-08T21:47:29 GET /api/logs 200 
+2025-08-08T21:47:29 GET /api/annotations?witness_id=w2 200 
+2025-08-08T21:47:34 POST /api/witnesses 400 Witness ID exists

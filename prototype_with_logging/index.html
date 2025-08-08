@@ -36,6 +36,8 @@
         <select id="witnessSelect"></select>
       </div>
       <button id="compareBtn">Vergleichen</button>
+      <button id="exportBtn">Exportieren</button>
+      <button id="deleteBtn" class="danger">Zeuge löschen</button>
     </div>
     <table id="alignmentTable">
       <thead>
@@ -50,6 +52,18 @@
     <input type="text" id="searchInput" placeholder="Suchbegriff…" />
     <button id="searchBtn">Suchen</button>
     <ul id="searchResults"></ul>
+  </section>
+
+  <section id="annotations-section">
+    <h2>Annotationen</h2>
+    <button id="loadAnnotationsBtn">Annotationen laden</button>
+    <ul id="annotationsList"></ul>
+  </section>
+
+  <section id="logs-section">
+    <h2>Server-Logs</h2>
+    <button id="loadLogsBtn">Logs laden</button>
+    <pre id="logsPre"></pre>
   </section>
 
   <script src="script.js"></script>

@@ -24,6 +24,8 @@ PORT = 8000
 witnesses = []
 # Liste von Annotationen
 annotations = []
+# Laufende ID für Annotationen
+next_annotation_id = 1
 
 
 def load_witnesses():
@@ -38,14 +40,22 @@ def load_witnesses():
 
 
 def load_annotations():
-    """Lädt Annotationen aus JSON-Datei."""
-    global annotations
+    """Lädt Annotationen aus JSON-Datei und initialisiert den ID-Zähler."""
+    global annotations, next_annotation_id
     data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data', 'annotations.json')
     try:
         with open(data_path, 'r', encoding='utf-8') as f:
             annotations = json.load(f)
     except FileNotFoundError:
         annotations = []
+    # Initialisiere den ID-Zähler anhand vorhandener Annotationen
+    next_annotation_id = 1
+    for ann in annotations:
+        if isinstance(ann, dict) and 'id' in ann:
+            try:
+                next_annotation_id = max(next_annotation_id, int(ann['id']) + 1)
+            except Exception:
+                pass
 
 
 def save_annotations():
@@ -104,6 +114,57 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_api_post_annotation()
         else:
             self.send_error(404, 'Not Found')
+
+    def do_DELETE(self):  # type: ignore[override]
+        parsed_path = self.path.split('?')[0]
+        if parsed_path.startswith('/api/witnesses/'):
+            self.handle_api_delete_witness(parsed_path)
+            return
+        if parsed_path.startswith('/api/annotations/'):
+            self.handle_api_delete_annotation(parsed_path)
+            return
+        self.send_error(404, 'Not Found')
+        write_log(self.command, self.path, 404, 'Delete endpoint not found')
+
+    def handle_api_delete_witness(self, path):
+        witness_id = path.split('/')[-1]
+        global witnesses, annotations
+        idx = next((i for i, w in enumerate(witnesses) if w['id'] == witness_id), None)
+        if idx is None:
+            self.send_error(404, 'Witness not found')
+            write_log(self.command, self.path, 404, 'Witness not found')
+            return
+        # Remove witness
+        removed = witnesses.pop(idx)
+        # Remove associated annotations
+        annotations = [ann for ann in annotations if ann['witness_id'] != witness_id]
+        save_witnesses()
+        save_annotations()
+        self.send_response(204)
+        self.end_headers()
+        write_log(self.command, self.path, 204, f"Deleted witness {witness_id}")
+
+    def handle_api_delete_annotation(self, path):
+        """Löscht eine Annotation anhand ihrer ID."""
+        global annotations
+        ann_id_str = path.split('/')[-1]
+        try:
+            ann_id = int(ann_id_str)
+        except ValueError:
+            self.send_error(400, 'Invalid annotation id')
+            write_log(self.command, self.path, 400, 'Invalid annotation id')
+            return
+        # Finde Annotation
+        idx = next((i for i, a in enumerate(annotations) if a.get('id') == ann_id), None)
+        if idx is None:
+            self.send_error(404, 'Annotation not found')
+            write_log(self.command, self.path, 404, 'Annotation not found')
+            return
+        annotations.pop(idx)
+        save_annotations()
+        self.send_response(204)
+        self.end_headers()
+        write_log(self.command, self.path, 204, f"Deleted annotation {ann_id}")
 
     def handle_api_get(self, path):
         if path == '/api/witnesses':
@@ -165,6 +226,52 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps(resp, ensure_ascii=False).encode('utf-8'))
             write_log(self.command, self.path, 200)
             return
+        if path == '/api/annotations':
+            # optional witness_id filter
+            from urllib.parse import urlparse, parse_qs
+            qs = parse_qs(urlparse(self.path).query)
+            wit_id = qs.get('witness_id', [None])[0]
+            if wit_id:
+                anns = [ann for ann in annotations if ann['witness_id'] == wit_id]
+            else:
+                anns = annotations
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.end_headers()
+            self.wfile.write(json.dumps(anns, ensure_ascii=False).encode('utf-8'))
+            write_log(self.command, self.path, 200)
+            return
+        if path.startswith('/api/export/'):
+            # Exportiert einen Zeugen als JSON-Datei
+            witness_id = path.split('/')[-1]
+            w = next((wit for wit in witnesses if wit['id'] == witness_id), None)
+            if not w:
+                self.send_error(404, 'Witness not found')
+                write_log(self.command, self.path, 404, 'Witness not found')
+                return
+            content = json.dumps(w, ensure_ascii=False, indent=2).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Disposition', f'attachment; filename="witness_{witness_id}.json"')
+            self.send_header('Content-Length', str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+            write_log(self.command, self.path, 200, f'Exported witness {witness_id}')
+            return
+        if path == '/api/logs':
+            # Liefert die letzten 50 Logzeilen
+            log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
+            log_path = os.path.join(log_dir, 'server.log')
+            lines = []
+            if os.path.exists(log_path):
+                with open(log_path, 'r', encoding='utf-8') as f:
+                    lines = f.readlines()[-50:]
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.end_headers()
+            self.wfile.write(json.dumps({'logs': [l.strip() for l in lines]}, ensure_ascii=False).encode('utf-8'))
+            write_log(self.command, self.path, 200)
+            return
         # unbekannter API Pfad
         self.send_error(404, 'API endpoint not found')
         write_log(self.command, self.path, 404, 'Endpoint not found')
@@ -211,7 +318,12 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             write_log(self.command, self.path, 400, 'Missing fields')
             return
         # Annotation hinzufügen
+        global next_annotation_id
+        # Annotation mit eindeutiger ID erstellen
+        ann_id = next_annotation_id
+        next_annotation_id += 1
         ann = {
+            'id': ann_id,
             'witness_id': data['witness_id'],
             'token_id': data['token_id'],
             'annotation': data['annotation'],
@@ -221,7 +333,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
         save_annotations()
         self.send_response(201)
         self.end_headers()
-        write_log(self.command, self.path, 201, f"Annotation added to {data['token_id']}")
+        write_log(self.command, self.path, 201, f"Annotation {ann_id} added to {data['token_id']}")
 
 
 def run_server():

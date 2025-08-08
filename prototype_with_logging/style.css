@@ -40,12 +40,30 @@ button {
   cursor: pointer;
 }
 
+/* Gefährliche Aktionen wie Löschen werden mit rotem Hintergrund gekennzeichnet */
+button.danger {
+  background-color: #ffe5e5;
+  border: 1px solid #ff8888;
+  color: #aa0000;
+}
+
 tr.diff {
   background-color: #ffe4e4;
 }
 
 td.annotated {
   background-color: #e4ffe4;
+}
+
+/* Button zum Löschen von Annotationen in der Liste */
+button.ann-delete {
+  margin-left: 0.5rem;
+  padding: 2px 6px;
+  font-size: 0.8rem;
+  background-color: #fdd;
+  border: 1px solid #f88;
+  color: #a00;
+  cursor: pointer;
 }
 
 #searchResults {
