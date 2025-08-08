@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>RE – Reading Environment (JS Prototype)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <h1>RE – Reading Environment</h1>
+        <p class="subtitle">Load a JSON export from the EPE and explore variants</p>
+    </header>
+    <main>
+        <section class="import-section">
+            <h2>1. Load edition JSON</h2>
+            <input type="file" id="jsonInput" accept="application/json">
+        </section>
+
+        <section id="editionControls" class="controls hidden">
+            <h2>2. Select witnesses</h2>
+            <div class="control-group">
+                <label for="baseSelect">Base witness:</label>
+                <select id="baseSelect"></select>
+            </div>
+            <div class="control-group">
+                <label>Other witnesses:</label>
+                <div id="witnessCheckboxes" class="checkboxes"></div>
+            </div>
+        </section>
+
+        <section id="editionView" class="edition-view hidden">
+            <h2>3. Alignment view</h2>
+            <div id="editionTable" class="alignment-table"></div>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 OpenITI JS Prototype.  This reading environment runs entirely in your browser.</p>
+    </footer>
+    <script type="module" src="script.js"></script>
+</body>
+</html>

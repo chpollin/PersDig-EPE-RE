@@ -1,0 +1,105 @@
+/* Styles for the RE prototype */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f6f7f9;
+  color: #333;
+  line-height: 1.5;
+}
+
+header.header {
+  background: #2a9d8f;
+  color: white;
+  padding: 1rem 2rem;
+  border-bottom: 4px solid #1b6f5b;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+header .subtitle {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #cce5e3;
+}
+
+main {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+section {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+section h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+  color: #2a9d8f;
+}
+
+.control-group {
+  margin-bottom: 0.75rem;
+}
+
+.checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.checkboxes label {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.alignment-table {
+  overflow-x: auto;
+}
+
+.alignment-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.alignment-table th, .alignment-table td {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.alignment-table th {
+  background: #e9f5f3;
+  color: #2a9d8f;
+}
+
+.alignment-table td.variant {
+  background: #fff0f0;
+}
+
+footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #555;
+}
+
+.hidden {
+  display: none;
+}

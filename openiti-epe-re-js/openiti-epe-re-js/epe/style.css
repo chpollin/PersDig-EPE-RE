@@ -1,0 +1,182 @@
+/* Basic styling for the EPE prototype */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f6f7f9;
+  color: #333;
+  line-height: 1.5;
+}
+
+header.header {
+  background: #1d3557;
+  color: white;
+  padding: 1rem 2rem;
+  border-bottom: 4px solid #457b9d;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+header .subtitle {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #a8dadc;
+}
+
+main {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #ddd;
+}
+
+section h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+  color: #1d3557;
+}
+
+/* Witness list */
+.witness-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.witness-card {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  width: calc(50% - 1rem);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.witness-card h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  color: #1d3557;
+}
+
+.witness-card pre {
+  background: #f1f3f5;
+  padding: 0.5rem;
+  white-space: pre-wrap;
+  border-radius: 3px;
+  overflow-x: auto;
+  max-height: 8rem;
+  margin: 0;
+}
+
+.tokenize-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+input[type="text"] {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+button {
+  padding: 0.4rem 0.75rem;
+  border: none;
+  border-radius: 3px;
+  background: #457b9d;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+button:hover {
+  background: #1d3557;
+}
+
+/* Alignment table */
+.alignment-table {
+  margin-top: 1rem;
+  overflow-x: auto;
+}
+
+.alignment-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.alignment-table th, .alignment-table td {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.alignment-table th {
+  background: #a8dadc;
+  color: #1d3557;
+}
+
+.alignment-table td.variant {
+  background: #ffe6e6;
+}
+
+.alignment-table td.selected {
+  outline: 2px solid #e63946;
+}
+
+/* Annotation editor */
+.annotation-editor {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-top: 1rem;
+  max-width: 400px;
+}
+
+.annotation-editor.hidden {
+  display: none;
+}
+
+.anno-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.5rem 0;
+}
+
+.anno-list li {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+  background: #f7f7f7;
+  padding: 0.25rem 0.5rem;
+  border-radius: 3px;
+}
+
+.anno-entry {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #555;
+}

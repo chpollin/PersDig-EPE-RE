@@ -1,0 +1,52 @@
+{
+  "witnesses": [
+    {
+      "id": "witness1",
+      "name": "witness1.txt",
+      "tokens": ["در", "این", "کتاب", "مبارک", "که", "او", "ساخت"]
+    },
+    {
+      "id": "witness2",
+      "name": "witness2.txt",
+      "tokens": ["در", "این", "کتاب", "شریف", "که", "او", "نوشت"]
+    }
+  ],
+  "alignment": [
+    {
+      "index": 0,
+      "base": { "witnessId": "witness1", "token": "در" },
+      "variants": []
+    },
+    {
+      "index": 1,
+      "base": { "witnessId": "witness1", "token": "این" },
+      "variants": []
+    },
+    {
+      "index": 2,
+      "base": { "witnessId": "witness1", "token": "کتاب" },
+      "variants": []
+    },
+    {
+      "index": 3,
+      "base": { "witnessId": "witness1", "token": "مبارک" },
+      "variants": [{ "witnessId": "witness2", "token": "شریف" }]
+    },
+    {
+      "index": 4,
+      "base": { "witnessId": "witness1", "token": "که" },
+      "variants": []
+    },
+    {
+      "index": 5,
+      "base": { "witnessId": "witness1", "token": "او" },
+      "variants": []
+    },
+    {
+      "index": 6,
+      "base": { "witnessId": "witness1", "token": "ساخت" },
+      "variants": [{ "witnessId": "witness2", "token": "نوشت" }]
+    }
+  ],
+  "annotations": {}
+}

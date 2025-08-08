@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>EPE – Edition Production Environment (JS Prototype)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <h1>EPE – Edition Production Environment</h1>
+        <p class="subtitle">Client‑side prototype written in HTML/JS/CSS</p>
+    </header>
+
+    <main>
+        <section class="import-section">
+            <h2>1. Import witnesses</h2>
+            <p>Select one or more plain‑text witness files.  Each file should contain
+            a single textual witness; for example, copy/paste the diplomatic
+            transcription into a `.txt` file.  You can experiment with the two
+            sample files in <code>epe/sample</code> to get started.</p>
+            <input type="file" id="fileInput" multiple accept=".txt">
+        </section>
+
+        <section class="tokenize-section">
+            <h2>2. Tokenization</h2>
+            <p>Enter a regular expression used to tokenize the witnesses.  By
+            default the pattern splits on whitespace (`/\S+/g`).  You can
+            supply any valid JavaScript regex; for example, `/[\p{L}]+/gu` to
+            match sequences of letters in Unicode.</p>
+            <div class="tokenize-controls">
+                <label for="regexInput">Regex pattern:</label>
+                <input type="text" id="regexInput" value="/\S+/g" size="20">
+                <button id="tokenizeBtn">Run Tokenizer</button>
+            </div>
+        </section>
+
+        <section class="witness-section">
+            <h2>3. Witnesses</h2>
+            <div id="witnessList" class="witness-list"></div>
+        </section>
+
+        <section class="alignment-section">
+            <h2>4. Alignment</h2>
+            <p>After tokenizing at least two witnesses you can align them
+            token‑by‑token.  Alignment is naïve: tokens are matched by position.
+            Variants are detected when token strings differ.</p>
+            <button id="alignBtn">Align witnesses</button>
+            <div id="alignmentTable" class="alignment-table"></div>
+        </section>
+
+        <section class="annotation-section">
+            <h2>5. Token annotation</h2>
+            <p>Select a cell in the alignment table to view or edit annotations.
+            Annotations are stored as arbitrary key–value pairs.</p>
+            <div id="annotationEditor" class="annotation-editor hidden">
+                <h3>Annotations for <span id="annoTokenId"></span></h3>
+                <ul id="annoList" class="anno-list"></ul>
+                <div class="anno-entry">
+                    <input type="text" id="annoKey" placeholder="key">
+                    <input type="text" id="annoValue" placeholder="value">
+                    <button id="addAnnoBtn">Add</button>
+                </div>
+                <button id="closeAnnoBtn">Close</button>
+            </div>
+        </section>
+
+        <section class="export-section">
+            <h2>6. Export</h2>
+            <p>Download your edition as a minimal TEI document or as JSON that can
+            be read by the accompanying reading environment.</p>
+            <button id="exportTeiBtn">Export TEI</button>
+            <button id="exportJsonBtn">Export JSON</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 OpenITI JS Prototype.  No backend required!</p>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
