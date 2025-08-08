@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPE & RE Prototype</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>EPE &amp; RE – erweiterter Prototype</h1>
+    <p>
+      Dieser Prototyp demonstriert einfache Funktionen der Reading
+      Environment (RE) und der Edition Production Environment (EPE). Sie können
+      bestehende Zeugen laden, neue Zeugen importieren und einfache
+      Alignments zwischen zwei Zeugen vergleichen.
+    </p>
+  </header>
+
+  <section id="import-section">
+    <h2>Zeugen importieren (JSON)</h2>
+    <input type="file" id="fileInput" accept="application/json" />
+    <button id="uploadBtn">Importieren</button>
+    <p id="uploadStatus"></p>
+  </section>
+
+  <section id="witnesses-section">
+    <h2>Zeugen vergleichen</h2>
+    <div class="selectors">
+      <div>
+        <label for="baseSelect">Basetext wählen:</label>
+        <select id="baseSelect"></select>
+      </div>
+      <div>
+        <label for="witnessSelect">Zeuge wählen:</label>
+        <select id="witnessSelect"></select>
+      </div>
+      <button id="compareBtn">Vergleichen</button>
+    </div>
+    <table id="alignmentTable">
+      <thead>
+        <tr><th>Position</th><th>Basetext</th><th>Zeuge</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section id="search-section">
+    <h2>Volltextsuche (einfach)</h2>
+    <input type="text" id="searchInput" placeholder="Suchbegriff…" />
+    <button id="searchBtn">Suchen</button>
+    <ul id="searchResults"></ul>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

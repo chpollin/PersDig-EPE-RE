@@ -1,0 +1,34 @@
+{
+  "witness": {
+    "id": "w1",
+    "siglum": "MS_001",
+    "label": "MS_001 – folio 42r",
+    "metadata": {
+      "language": "ar",
+      "date": "1300"
+    },
+    "sections": [
+      {
+        "id": "sec1",
+        "order_no": 1,
+        "type": "page",
+        "tokens": [
+          {
+            "id": "tok1",
+            "text": "بسم",
+            "position": 1,
+            "bbox": {"x": 100, "y": 200, "width": 50, "height": 20},
+            "alignments": {"base": "b1"}
+          },
+          {
+            "id": "tok2",
+            "text": "الله",
+            "position": 2,
+            "bbox": {"x": 160, "y": 200, "width": 60, "height": 20},
+            "alignments": {"base": "b2"}
+          }
+        ]
+      }
+    ]
+  }
+}

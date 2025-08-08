@@ -1,0 +1,15 @@
+2025-08-08T21:20:05 GET /api/witnesses 200 
+2025-08-08T21:20:19 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:20:41 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:20:43 GET /api/witnesses 200 
+2025-08-08T21:20:46 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:20:50 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:20:52 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:28:43 GET /api/witnesses 200 
+2025-08-08T21:28:47 POST /api/witnesses 201 Imported witness w3
+2025-08-08T21:28:47 GET /api/witnesses 200 
+2025-08-08T21:28:57 GET /api/alignments?base=w2&witness=w1 200 
+2025-08-08T21:29:02 GET /api/alignments?base=w2&witness=w2 200 
+2025-08-08T21:29:03 GET /api/alignments?base=w2&witness=w3 200 
+2025-08-08T21:29:06 GET /api/alignments?base=w1&witness=w3 200 
+2025-08-08T21:29:07 GET /api/alignments?base=w2&witness=w3 200 

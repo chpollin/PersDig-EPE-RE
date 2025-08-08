@@ -1,0 +1,64 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 1.5rem;
+  max-width: 900px;
+}
+
+h1 {
+  margin-bottom: 0.5rem;
+}
+
+h2 {
+  margin-top: 2rem;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 6px 8px;
+}
+
+th {
+  background-color: #f3f3f3;
+}
+
+.selectors {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 6px 12px;
+  margin-top: 0.5rem;
+  cursor: pointer;
+}
+
+tr.diff {
+  background-color: #ffe4e4;
+}
+
+td.annotated {
+  background-color: #e4ffe4;
+}
+
+#searchResults {
+  margin-top: 0.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+#searchResults li {
+  padding: 4px 0;
+}
+
+#uploadStatus {
+  margin-top: 0.5rem;
+  font-style: italic;
+}
