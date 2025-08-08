@@ -62,3 +62,22 @@
 2025-08-08T21:47:29 GET /api/logs 200 
 2025-08-08T21:47:29 GET /api/annotations?witness_id=w2 200 
 2025-08-08T21:47:34 POST /api/witnesses 400 Witness ID exists
+2025-08-08T21:56:29 GET /api/witnesses 200 
+2025-08-08T21:56:29 GET /api/witnesses/w1 200 
+2025-08-08T21:56:30 GET /api/witnesses/w1 200 
+2025-08-08T21:56:38 POST /api/witnesses 201 Imported witness w3
+2025-08-08T21:56:38 GET /api/witnesses 200 
+2025-08-08T21:56:38 GET /api/witnesses/w1 200 
+2025-08-08T21:56:38 GET /api/witnesses/w1 200 
+2025-08-08T21:56:42 GET /api/alignments?base=w1&witness=w1&base_section=sec1&witness_section=sec1 200 
+2025-08-08T21:56:44 GET /api/export/w1 200 Exported witness w1
+2025-08-08T21:56:49 PATCH /api/witnesses/w1 200 Updated witness w1
+2025-08-08T21:56:49 GET /api/witnesses 200 
+2025-08-08T21:56:49 GET /api/witnesses/w1 200 
+2025-08-08T21:56:49 GET /api/witnesses/w1 200 
+2025-08-08T21:56:51 GET /api/witnesses/w2 200 
+2025-08-08T21:56:59 GET /api/annotations?witness_id=w2 200 
+2025-08-08T21:57:03 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:57:07 POST /api/witnesses 400 Missing required fields
+2025-08-08T21:57:08 GET /api/logs/export 200 Exported logs
+2025-08-08T21:57:09 GET /api/logs 200 

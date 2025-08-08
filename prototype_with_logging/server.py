@@ -28,6 +28,11 @@ annotations = []
 next_annotation_id = 1
 
 
+def find_witness_by_id(witness_id: str):
+    """Hilfsfunktion, um einen Zeugen anhand seiner ID zu finden."""
+    return next((wit for wit in witnesses if wit['id'] == witness_id), None)
+
+
 def load_witnesses():
     """Lädt die Daten aus der JSON-Datei in die globale Liste."""
     global witnesses
@@ -90,7 +95,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self) -> None:
         # CORS-Header hinzufügen
         self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         super().end_headers()
 
@@ -125,6 +130,24 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             return
         self.send_error(404, 'Not Found')
         write_log(self.command, self.path, 404, 'Delete endpoint not found')
+
+    def do_PUT(self):  # type: ignore[override]
+        """Behandelt PUT-Anfragen, aktuell für Annotationen."""
+        parsed_path = self.path.split('?')[0]
+        if parsed_path.startswith('/api/annotations/'):
+            self.handle_api_put_annotation(parsed_path)
+            return
+        self.send_error(404, 'Not Found')
+        write_log(self.command, self.path, 404, 'PUT endpoint not found')
+
+    def do_PATCH(self):  # type: ignore[override]
+        """Behandelt PATCH-Anfragen, aktuell für Zeugen."""
+        parsed_path = self.path.split('?')[0]
+        if parsed_path.startswith('/api/witnesses/'):
+            self.handle_api_patch_witness(parsed_path)
+            return
+        self.send_error(404, 'Not Found')
+        write_log(self.command, self.path, 404, 'PATCH endpoint not found')
 
     def handle_api_delete_witness(self, path):
         witness_id = path.split('/')[-1]
@@ -166,6 +189,72 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         write_log(self.command, self.path, 204, f"Deleted annotation {ann_id}")
 
+    def handle_api_put_annotation(self, path):
+        """Aktualisiert den Text einer bestehenden Annotation."""
+        global annotations
+        ann_id_str = path.split('/')[-1]
+        try:
+            ann_id = int(ann_id_str)
+        except ValueError:
+            self.send_error(400, 'Invalid annotation id')
+            write_log(self.command, self.path, 400, 'Invalid annotation id')
+            return
+        # JSON-Daten aus dem Request-Body lesen
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body.decode('utf-8'))
+        except json.JSONDecodeError:
+            self.send_error(400, 'Invalid JSON')
+            write_log(self.command, self.path, 400, 'Invalid JSON')
+            return
+        if 'annotation' not in data:
+            self.send_error(400, 'Missing annotation field')
+            write_log(self.command, self.path, 400, 'Missing annotation field')
+            return
+        # Finde Annotation
+        ann = next((a for a in annotations if a.get('id') == ann_id), None)
+        if not ann:
+            self.send_error(404, 'Annotation not found')
+            write_log(self.command, self.path, 404, 'Annotation not found')
+            return
+        ann['annotation'] = data['annotation']
+        ann['timestamp'] = datetime.datetime.now().isoformat(timespec='seconds')
+        save_annotations()
+        self.send_response(200)
+        self.end_headers()
+        write_log(self.command, self.path, 200, f"Updated annotation {ann_id}")
+
+    def handle_api_patch_witness(self, path):
+        """Aktualisiert einzelne Felder eines Zeugen, z. B. das Label."""
+        witness_id = path.split('/')[-1]
+        w = find_witness_by_id(witness_id)
+        if not w:
+            self.send_error(404, 'Witness not found')
+            write_log(self.command, self.path, 404, 'Witness not found')
+            return
+        # JSON-Daten aus dem Request-Body lesen
+        content_length = int(self.headers.get('Content-Length', 0))
+        body = self.rfile.read(content_length)
+        try:
+            data = json.loads(body.decode('utf-8'))
+        except json.JSONDecodeError:
+            self.send_error(400, 'Invalid JSON')
+            write_log(self.command, self.path, 400, 'Invalid JSON')
+            return
+        updated = False
+        if 'label' in data and isinstance(data['label'], str):
+            w['label'] = data['label']
+            updated = True
+        if not updated:
+            self.send_error(400, 'No updatable fields provided')
+            write_log(self.command, self.path, 400, 'No updatable fields provided')
+            return
+        save_witnesses()
+        self.send_response(200)
+        self.end_headers()
+        write_log(self.command, self.path, 200, f"Updated witness {witness_id}")
+
     def handle_api_get(self, path):
         if path == '/api/witnesses':
             # Liste der Zeugen (nur id + label)
@@ -196,20 +285,36 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             qs = parse_qs(urlparse(self.path).query)
             base_id = qs.get('base', [None])[0]
             witness_id = qs.get('witness', [None])[0]
+            base_sec_id = qs.get('base_section', [None])[0]
+            witness_sec_id = qs.get('witness_section', [None])[0]
             if not base_id or not witness_id:
                 self.send_error(400, 'Missing base or witness id')
                 write_log(self.command, self.path, 400, 'Missing base or witness id')
                 return
-            base = next((wit for wit in witnesses if wit['id'] == base_id), None)
-            other = next((wit for wit in witnesses if wit['id'] == witness_id), None)
+            base = find_witness_by_id(base_id)
+            other = find_witness_by_id(witness_id)
             if not base or not other:
                 self.send_error(404, 'Witness not found')
                 write_log(self.command, self.path, 404, 'Witness not found')
                 return
+            # Abschnitt ermitteln
+            def select_section(wit, sec_id):
+                if sec_id:
+                    for sec in wit.get('sections', []):
+                        if str(sec.get('id')) == sec_id:
+                            return sec
+                # Fallback: erster Abschnitt oder None
+                return wit.get('sections', [None])[0] if wit.get('sections') else None
+            base_sec = select_section(base, base_sec_id)
+            other_sec = select_section(other, witness_sec_id)
+            if not base_sec or not other_sec:
+                self.send_error(404, 'Section not found')
+                write_log(self.command, self.path, 404, 'Section not found')
+                return
             alignments = []
             # Einfaches Alignment: Positionen matchen
-            base_tokens = base['sections'][0]['tokens']
-            other_tokens = other['sections'][0]['tokens']
+            base_tokens = base_sec.get('tokens', [])
+            other_tokens = other_sec.get('tokens', [])
             max_len = max(len(base_tokens), len(other_tokens))
             for idx in range(max_len):
                 base_tok = base_tokens[idx] if idx < len(base_tokens) else None
@@ -271,6 +376,24 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(json.dumps({'logs': [l.strip() for l in lines]}, ensure_ascii=False).encode('utf-8'))
             write_log(self.command, self.path, 200)
+            return
+        if path == '/api/logs/export':
+            # Liefert das Log als herunterladbare Datei
+            log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
+            log_path = os.path.join(log_dir, 'server.log')
+            if not os.path.exists(log_path):
+                self.send_error(404, 'Log file not found')
+                write_log(self.command, self.path, 404, 'Log not found')
+                return
+            with open(log_path, 'rb') as f:
+                content = f.read()
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/plain; charset=utf-8')
+            self.send_header('Content-Disposition', 'attachment; filename="server.log"')
+            self.send_header('Content-Length', str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+            write_log(self.command, self.path, 200, 'Exported logs')
             return
         # unbekannter API Pfad
         self.send_error(404, 'API endpoint not found')

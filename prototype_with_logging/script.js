@@ -14,6 +14,26 @@ function populateSelect(select, witnesses) {
   });
 }
 
+// Füllt die Abschnitt-Selects basierend auf dem ausgewählten Zeugen mit den vorhandenen Sections.
+async function populateSectionSelect(selectId, witnessId) {
+  const select = document.getElementById(selectId);
+  select.innerHTML = '';
+  if (!witnessId) return;
+  try {
+    const resp = await fetch(`/api/witnesses/${encodeURIComponent(witnessId)}`);
+    if (!resp.ok) return;
+    const witness = await resp.json();
+    (witness.sections || []).forEach(sec => {
+      const opt = document.createElement('option');
+      opt.value = sec.id;
+      opt.textContent = sec.id;
+      select.appendChild(opt);
+    });
+  } catch (err) {
+    console.error('Fehler beim Laden der Sections', err);
+  }
+}
+
 async function loadWitnesses() {
   try {
     const witnesses = await fetchWitnesses();
@@ -21,6 +41,14 @@ async function loadWitnesses() {
     const witnessSelect = document.getElementById('witnessSelect');
     populateSelect(baseSelect, witnesses);
     populateSelect(witnessSelect, witnesses);
+    // Sections initialisieren
+    if (witnesses.length > 0) {
+      // Basetext- und Zeugen-Section-Selects befüllen
+      const firstBase = baseSelect.value;
+      const firstWit = witnessSelect.value;
+      await populateSectionSelect('baseSectionSelect', firstBase);
+      await populateSectionSelect('witnessSectionSelect', firstWit);
+    }
   } catch (err) {
     console.error('Fehler beim Laden der Zeugen', err);
   }
@@ -33,7 +61,15 @@ async function compareWitnesses() {
     alert('Bitte wählen Sie Basetext und Zeugen aus.');
     return;
   }
-  const resp = await fetch(`/api/alignments?base=${encodeURIComponent(baseId)}&witness=${encodeURIComponent(witnessId)}`);
+  const baseSec = document.getElementById('baseSectionSelect').value;
+  const witSec = document.getElementById('witnessSectionSelect').value;
+  const query = new URLSearchParams({
+    base: baseId,
+    witness: witnessId
+  });
+  if (baseSec) query.append('base_section', baseSec);
+  if (witSec) query.append('witness_section', witSec);
+  const resp = await fetch(`/api/alignments?${query.toString()}`);
   const data = await resp.json();
   const tbody = document.querySelector('#alignmentTable tbody');
   tbody.innerHTML = '';
@@ -62,6 +98,8 @@ async function compareWitnesses() {
     });
     // Markiere bereits vorhandene Annotationen
     highlightAnnotated();
+    // Markiere Suchtreffer
+    highlightSearchHits();
 }
 
 async function searchTokens() {
@@ -69,17 +107,24 @@ async function searchTokens() {
   const resultsList = document.getElementById('searchResults');
   resultsList.innerHTML = '';
   if (!query) return;
+  // Zurücksetzen der Treffer
+  searchHits.clear();
   const witnesses = await fetchWitnesses();
   for (const w of witnesses) {
     const res = await fetch(`/api/witnesses/${encodeURIComponent(w.id)}`);
     const data = await res.json();
-    const tokens = data.sections.flatMap(sec => sec.tokens);
-    tokens.filter(tok => tok.text.includes(query)).forEach(tok => {
-      const li = document.createElement('li');
-      li.textContent = `${w.label} – Position ${tok.position}: ${tok.text}`;
-      resultsList.appendChild(li);
+    // Alle Sections durchsuchen
+    data.sections.forEach(sec => {
+      sec.tokens.filter(tok => tok.text.includes(query)).forEach(tok => {
+        const li = document.createElement('li');
+        li.textContent = `${w.label} – Position ${tok.position}: ${tok.text}`;
+        resultsList.appendChild(li);
+        searchHits.add(tok.id);
+      });
     });
   }
+  // Markierungen aktualisieren
+  highlightSearchHits();
 }
 
 async function uploadWitness() {
@@ -128,6 +173,19 @@ async function loadAnnotationsList() {
     const span = document.createElement('span');
     span.textContent = `${ann.token_id}: ${ann.annotation}`;
     li.appendChild(span);
+    // Bearbeiten-Knopf (Stift)
+    if (ann.id !== undefined) {
+      const editBtn = document.createElement('button');
+      editBtn.textContent = '✎';
+      editBtn.title = 'Annotation bearbeiten';
+      editBtn.classList.add('ann-edit');
+      editBtn.dataset.annId = ann.id;
+      editBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        editAnnotation(ann.id, ann.annotation);
+      });
+      li.appendChild(editBtn);
+    }
     // Löschknopf für Annotation
     if (ann.id !== undefined) {
       const btn = document.createElement('button');
@@ -153,6 +211,27 @@ function highlightAnnotated() {
     const tokenId = cell.dataset.tokenId;
     cell.classList.toggle('annotated', annotationsGlobal.some(a => a.token_id === tokenId));
   });
+}
+
+// Hebt Suchtreffer in der Vergleichstabelle hervor
+function highlightSearchHits() {
+  const cells = document.querySelectorAll('#alignmentTable td[data-token-id]');
+  cells.forEach(cell => {
+    const tokenId = cell.dataset.tokenId;
+    if (searchHits.has(tokenId)) {
+      cell.classList.add('search-hit');
+    } else {
+      cell.classList.remove('search-hit');
+    }
+  });
+}
+
+// Entfernt alle Suchhervorhebungen und leert die Ergebnisliste
+function clearSearchHighlights() {
+  searchHits.clear();
+  document.getElementById('searchResults').innerHTML = '';
+  document.getElementById('searchInput').value = '';
+  highlightSearchHits();
 }
 
 async function loadLogs() {
@@ -213,6 +292,64 @@ async function deleteAnnotation(annId) {
   }
 }
 
+/**
+ * Öffnet einen Dialog zum Bearbeiten einer Annotation und aktualisiert diese via API.
+ * @param {number} annId Die ID der Annotation
+ * @param {string} currentText Der aktuelle Text der Annotation
+ */
+async function editAnnotation(annId, currentText) {
+  const newText = prompt('Annotation bearbeiten:', currentText);
+  if (newText === null) return; // Abbrechen
+  try {
+    const resp = await fetch(`/api/annotations/${encodeURIComponent(annId)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ annotation: newText })
+    });
+    if (resp.status === 200) {
+      await loadAnnotationsList();
+    } else {
+      const txt = await resp.text();
+      alert('Fehler beim Aktualisieren: ' + txt);
+    }
+  } catch (err) {
+    alert('Fehler: ' + err);
+  }
+}
+
+/**
+ * Benennt den aktuell ausgewählten Zeugen um.
+ */
+async function renameWitness() {
+  const witnessId = document.getElementById('witnessSelect').value;
+  if (!witnessId) {
+    alert('Bitte wählen Sie einen Zeugen aus.');
+    return;
+  }
+  // Aktuelles Label ermitteln
+  const witnessSelect = document.getElementById('witnessSelect');
+  const currentLabel = witnessSelect.options[witnessSelect.selectedIndex].text;
+  const newLabel = prompt('Neues Label für den Zeugen:', currentLabel);
+  if (!newLabel || newLabel === currentLabel) {
+    return;
+  }
+  try {
+    const resp = await fetch(`/api/witnesses/${encodeURIComponent(witnessId)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ label: newLabel })
+    });
+    if (resp.status === 200) {
+      await loadWitnesses();
+    } else {
+      const txt = await resp.text();
+      alert('Fehler beim Umbenennen: ' + txt);
+    }
+  } catch (err) {
+    alert('Fehler: ' + err);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   loadWitnesses();
   document.getElementById('compareBtn').addEventListener('click', compareWitnesses);
@@ -222,6 +359,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('loadLogsBtn').addEventListener('click', loadLogs);
   document.getElementById('deleteBtn').addEventListener('click', deleteWitness);
   document.getElementById('exportBtn').addEventListener('click', exportWitness);
+  document.getElementById('renameBtn').addEventListener('click', renameWitness);
+  document.getElementById('baseSelect').addEventListener('change', async (e) => {
+    const wid = e.target.value;
+    await populateSectionSelect('baseSectionSelect', wid);
+  });
+  document.getElementById('witnessSelect').addEventListener('change', async (e) => {
+    const wid = e.target.value;
+    await populateSectionSelect('witnessSectionSelect', wid);
+  });
+  document.getElementById('clearSearchBtn').addEventListener('click', clearSearchHighlights);
+  document.getElementById('downloadLogsBtn').addEventListener('click', () => {
+    window.location.href = '/api/logs/export';
+  });
 });
 
 /**

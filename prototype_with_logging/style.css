@@ -55,6 +55,11 @@ td.annotated {
   background-color: #e4ffe4;
 }
 
+/* Zellen, die einem Suchtreffer entsprechen, werden gelb hinterlegt */
+td.search-hit {
+  background-color: #ffffc4;
+}
+
 /* Button zum Löschen von Annotationen in der Liste */
 button.ann-delete {
   margin-left: 0.5rem;
@@ -63,6 +68,17 @@ button.ann-delete {
   background-color: #fdd;
   border: 1px solid #f88;
   color: #a00;
+  cursor: pointer;
+}
+
+/* Button zum Bearbeiten von Annotationen in der Liste */
+button.ann-edit {
+  margin-left: 0.5rem;
+  padding: 2px 6px;
+  font-size: 0.8rem;
+  background-color: #eef;
+  border: 1px solid #88a;
+  color: #004;
   cursor: pointer;
 }
 

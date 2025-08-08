@@ -30,13 +30,18 @@
       <div>
         <label for="baseSelect">Basetext wählen:</label>
         <select id="baseSelect"></select>
+        <label for="baseSectionSelect">Section:</label>
+        <select id="baseSectionSelect"></select>
       </div>
       <div>
         <label for="witnessSelect">Zeuge wählen:</label>
         <select id="witnessSelect"></select>
+        <label for="witnessSectionSelect">Section:</label>
+        <select id="witnessSectionSelect"></select>
       </div>
       <button id="compareBtn">Vergleichen</button>
       <button id="exportBtn">Exportieren</button>
+      <button id="renameBtn">Umbenennen</button>
       <button id="deleteBtn" class="danger">Zeuge löschen</button>
     </div>
     <table id="alignmentTable">
@@ -51,6 +56,7 @@
     <h2>Volltextsuche (einfach)</h2>
     <input type="text" id="searchInput" placeholder="Suchbegriff…" />
     <button id="searchBtn">Suchen</button>
+    <button id="clearSearchBtn">Hervorhebungen entfernen</button>
     <ul id="searchResults"></ul>
   </section>
 
@@ -63,6 +69,7 @@
   <section id="logs-section">
     <h2>Server-Logs</h2>
     <button id="loadLogsBtn">Logs laden</button>
+    <button id="downloadLogsBtn">Logs herunterladen</button>
     <pre id="logsPre"></pre>
   </section>
 
